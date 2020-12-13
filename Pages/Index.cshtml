@@ -1,0 +1,340 @@
+﻿@page
+@model TVLibraryAPI.Pages.IndexModel
+@{
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Shows</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="icon" type="image/x-icon" href="~/favicon.ico">
+    <style>
+        #shows {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+            #shows td, #shows th {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+
+            #shows tr:nth-child(even) {
+                background-color: #f2f2f2;
+            }
+
+            #shows tr:hover {
+                background-color: #ddd;
+            }
+
+            #shows th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #4CAF50;
+                color: white;
+            }
+    </style>
+</head>
+
+<body style="background-color:silver;">
+    <div>
+        <!-- Navigation bar code -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-info">
+            <a class="navbar-brand" href="#">Shows</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarText">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item active">
+                        <button class="btn btn-outline-dark" onclick="getadd_Shows()" data-toggle="modal" data-target="#addShows">Add New Show</button>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- following division is creating main area of the web page where all shows data will display -->
+        <div class="container">
+            <div class="row" id="allShows">
+            </div>
+        </div>
+    </div>
+
+    <!-- below mentioned code will create the template to add a new Show -->
+    <div class="modal" tabindex="-1" role="dialog" id="addShows">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Shows</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="title">Title</label>
+                            <input type="text" class="form-control" id="title" aria-describedby="titleHelp" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="summary">Summary</label>
+                            <textarea rows="6" cols="40" class="form-control" id="summary" aria-describedby="summaryHelp" placeholder="Summary"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="platform">Platform</label>
+                            <select class="form-control" id="platform" aria-describedby="platformHelp"></select>
+                        </div>
+                        <div class="form-group">
+                            <input type="radio" aria-describedby="season_Help" name="schedule" value="Season">
+                            <label for="season">Season</label>
+                            <input type="radio" aria-describedby="daily_Help" name="schedule" value="Daily">
+                            <label for="daily">Daily</label>
+                            <input type="radio" aria-describedby="weekly_Help" name="schedule" value="Weekly">
+                            <label for="weekly">Weekly</label>
+                        </div>
+
+                        <div class="form-group" id="result">
+
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="addShows()">Add Shows</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="update_Shows">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Shows</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+
+                            <input type="hidden" class="form-control" id="_id" aria-describedby="IdHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="update_title">Title</label>
+                            <input type="text" class="form-control" id="update_title" aria-describedby="update_titleHelp" placeholder="Title">
+                        </div>
+                        <div class="form-group">
+                            <label for="update_summary">Summary</label>
+                            <textarea rows="6" cols="40" class="form-control" id="update_summary" aria-describedby="update_summaryHelp" placeholder="Summary"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="update_platform">Platform</label>
+                            <select class="form-control" id="update_platform" aria-describedby="update_platformHelp"></select>
+                        </div>
+                        <div class="form-group">
+                            <input type="radio" aria-describedby="season_Help" name="update_schedule" value="Season">
+                            <label for="season">Season</label>
+                            <input type="radio" aria-describedby="daily_Help" name="update_schedule" value="Daily">
+                            <label for="daily">Daily</label>
+                            <input type="radio" aria-describedby="weekly_Help" name="update_schedule" value="Weekly">
+                            <label for="weekly">Weekly</label>
+                        </div>
+
+                        <div class="form-group" id="update_result">
+
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="updateShows()">Update Shows</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <! -- java script files that will help to link the front end and back end -->
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        var uri = 'api/Shows';
+        var uriPlatforms = 'api/Platforms';
+
+        $(document).ready(function () {
+            // Gets all Shows
+            $.getJSON(uri)
+                .done(function (data) {
+                    console.log("success in getting shows");
+                    console.log(data);
+                    $("#ShowsTemplate").tmpl(data).appendTo("#allShows");
+                });
+        });
+
+        function getAllShows() {
+            $.getJSON(uri)
+                .done(function (data) {
+                    console.log("Updating Show List");
+                    $("#allShows").text("");
+                    $("#ShowsTemplate").tmpl(data).appendTo("#allShows");
+                });
+        }
+
+        //funtion to fill the data into add template
+        function getadd_Shows() {
+            $.ajax({
+                type: "GET",
+                url: uriPlatforms,
+                contentType: "application/json"
+            }).done(function (data) {
+                console.log(data);
+                $('#title').val('');
+                $('#summary').val('');
+                $("input[name=schedule][value='Daily']").prop('checked', true);
+                $("#result").html("");
+                var platformDDL = $("#platform");
+                platformDDL.empty();
+                platformDDL.append($('<option/>', { value: 0, text: '--Select Platform--' }))
+                $(data).each(function (index, item) {
+                    platformDDL.append($('<option/>', { value: item.id, text: item.name }));
+                });
+            });
+        }
+
+        function addShows() {
+            var _title = $('#title').val();
+            var _summary = $('#summary').val();
+            var _platform = $('#platform').val();
+            var _schedule = $("input[name='schedule']:checked").val();
+            var Show = {
+                title: _title,
+                summary: _summary,
+                platformId: parseInt(_platform),
+                schedule: _schedule
+            };
+            console.log(Show);
+            console.log(JSON.stringify(Show));
+            $.ajax({
+                type: "POST",
+                url: uri,
+                data: JSON.stringify(Show),
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+            }).done(function (response) {
+                $("#result").html("Success");
+                $('#title').val('');
+                $('#address').val('');
+                $("input[name=schedule][value='Daily']").prop('checked', true);
+                getAllShows();
+            }).fail(function (jqXHR, textStatus) {
+                $("#result").html("An error occured when Adding the show record.");
+            });
+        }
+
+        //funtion to fill the data into update template
+        function getupdate_Shows(id) {
+            $.ajax({
+                type: "GET",
+                url: uriPlatforms,
+                contentType: "application/json"
+            }).done(function (data) {
+                console.log(data);
+                var platformDDL = $("#update_platform");
+                platformDDL.empty();
+                platformDDL.append($('<option/>', { value: 0, text: '--Select Platform--' }))
+                $(data).each(function (index, item) {
+                    platformDDL.append($('<option/>', { value: item.id, text: item.name }));
+                });
+                $.ajax({
+                    type: "GET",
+                    url: uri + "/" + id,
+                    contentType: "application/json"
+                }).done(function (response) {
+                    $('#_id').val(response.id);
+                    $('#update_title').val(response.title);
+                    $('#update_summary').val(response.summary);
+                    $("#update_platform").val(response.platformId)
+                    $("input[name=update_schedule][value=" + response.schedule + "]").prop('checked', true);
+                });
+            });
+
+        }
+
+        // function to update data of the Show
+        function updateShows() {
+            var _title = $('#update_title').val();
+            var _summary = $('#update_summary').val();
+            var _platform = $('#update_platform').val();
+            var _schedule = $("input[name='update_schedule']:checked").val();
+            var updateShows = {
+                id: parseInt($('#_id').val()),
+                title: _title,
+                summary: _summary,
+                platformId: parseInt(_platform),
+                schedule: _schedule
+            };
+            console.log(updateShows);
+            console.log(JSON.stringify(updateShows));
+            $.ajax({
+                type: "PUT",
+                url: uri + "/" + $('#_id').val(),
+                data: JSON.stringify(updateShows),
+                contentType: "application/json; charset=utf-8",
+                dataType: 'json',
+            }).done(function (response) {
+                $("#update_result").html("Success");
+                getAllShows();
+            }).fail(function (jqXHR, textStatus) {
+                $("#update_result").html("An error occured when Adding the Show record.");
+            });
+        }
+
+        //funtion to delete a particular Show based on id
+
+        function remove(id) {
+            var yes = confirm("Are you sure you want to delete this Show?");
+            if (yes) {
+                $.ajax({
+                    type: "DELETE",
+                    url: uri + "/" + id,
+                }).done(function (response) {
+                    getAllShows();
+                });
+            }
+        }
+
+    </script>
+
+    <script id="ShowsTemplate" type="text/x-jquery-tmpl">
+
+        <div class="card card text-black bg-secondary border-warning mb-3" style="width: 60%;">
+            <table id="shows">
+                <tr>
+                    <th>Title: ${title}</th>
+                </tr>
+                <tr>
+                    <td>Summary :  ${summary}</td>
+                </tr>
+                <tr>
+                    <td>Platform : ${platform}</td>
+                </tr>
+                <tr>
+                    <td>Schedule : ${schedule}</td>
+                </tr>
+            </table>
+            <span>
+                <button class="btn btn-outline-warning" onclick="getupdate_Shows('${id}')" data-toggle="modal" data-target="#update_Shows">Update</button>
+                <a href="#" class="btn btn-danger" onclick="remove('${id}')">Delete</a>
+            </span>
+        </div>
+
+    </script>
+</body>
+</html>
